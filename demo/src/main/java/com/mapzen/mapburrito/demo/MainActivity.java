@@ -1,11 +1,19 @@
 package com.mapzen.mapburrito.demo;
 
-import com.mapzen.mapburrito.MapController;
+import com.mapzen.mapburrito.MapBuilder;
+
+import org.oscim.android.MapView;
+import org.oscim.backend.AssetAdapter;
+import org.oscim.theme.ThemeFile;
+import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -14,7 +22,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MapController mapController = new MapController();
+        final MapView mapView = (MapView) findViewById(R.id.map);
+        new MapBuilder(mapView.map())
+                .setBaseMap(new OSciMap4TileSource())
+                .addBuildingLayer()
+                .addLabelLayer()
+                .setTheme(new DefaultTheme())
+                .build();
     }
 
     @Override
@@ -37,5 +51,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class DefaultTheme implements ThemeFile {
+        @Override
+        public InputStream getRenderThemeAsStream() throws FileNotFoundException {
+            return AssetAdapter.readFileAsStream("styles/default.xml");
+        }
     }
 }
