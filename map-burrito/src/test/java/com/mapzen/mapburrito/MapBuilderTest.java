@@ -35,8 +35,14 @@ public class MapBuilderTest {
     }
 
     @Test
-    public void setBaseMap_shouldAddBaseLayer() throws Exception {
-        builder.setBaseMap(new OSciMap4TileSource()).build();
+    public void setTileSource_shouldAddVectorTileLayerFromUrl() throws Exception {
+        builder.setTileSource("http://vector.example.com/").build();
+        assertThat(map.layers().get(1)).isInstanceOf(VectorTileLayer.class);
+    }
+
+    @Test
+    public void setTileSource_shouldAddVectorTileLayerFromTileSource() throws Exception {
+        builder.setTileSource(new OSciMap4TileSource()).build();
         assertThat(map.layers().get(1)).isInstanceOf(VectorTileLayer.class);
     }
 
@@ -49,33 +55,33 @@ public class MapBuilderTest {
 
     @Test
     public void addBuildingLayer_shouldAddBuildingLayerToMap() throws Exception {
-        builder.setBaseMap(new OSciMap4TileSource()).addBuildingLayer().build();
+        builder.setTileSource("http://vector.example.com/").addBuildingLayer().build();
         assertThat(map.layers().get(2)).isInstanceOf(BuildingLayer.class);
     }
 
     @Test
     public void addLabelLayer_shouldAddLabelLayerToMap() throws Exception {
-        builder.setBaseMap(new OSciMap4TileSource()).addLabelLayer().build();
+        builder.setTileSource("http://vector.example.com/").addLabelLayer().build();
         assertThat(map.layers().get(2)).isInstanceOf(LabelLayer.class);
     }
 
     @Test
-    public void setTheme_shouldApplyTheme() throws Exception {
-        ThemeFile theme = new TestTheme();
+    public void setTheme_shouldApplyThemeFromPath() throws Exception {
+        String path = "path/to/theme.xml";
+        builder.setTheme(path).build();
+        assertThat(((MapBuilder.Theme) ((TestMap) map).getTheme()).getPath()).isEqualTo(path);
+    }
+
+    @Test
+    public void setTheme_shouldApplyThemeFromTheme() throws Exception {
+        MapBuilder.Theme theme = new MapBuilder.Theme("path/to/theme.xml");
         builder.setTheme(theme).build();
         assertThat(((TestMap) map).getTheme()).isEqualTo(theme);
     }
 
-    class TestLayer extends Layer {
+    private class TestLayer extends Layer {
         public TestLayer(Map map) {
             super(map);
-        }
-    }
-
-    class TestTheme implements ThemeFile {
-        @Override
-        public InputStream getRenderThemeAsStream() throws FileNotFoundException {
-            return null;
         }
     }
 }

@@ -24,10 +24,10 @@ public class MainActivity extends ActionBarActivity {
 
         final MapView mapView = (MapView) findViewById(R.id.map);
         new MapBuilder(mapView.map())
-                .setBaseMap(new OSciMap4TileSource())
+                .setTileSource(new OSciMap4TileSource())
                 .addBuildingLayer()
                 .addLabelLayer()
-                .setTheme(new DefaultTheme())
+                .setTheme("styles/default.xml")
                 .build();
     }
 
@@ -51,12 +51,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class DefaultTheme implements ThemeFile {
-        @Override
-        public InputStream getRenderThemeAsStream() throws FileNotFoundException {
-            return AssetAdapter.readFileAsStream("styles/default.xml");
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.mapzen.mapburrito;
 
+import org.oscim.backend.AssetAdapter;
 import org.oscim.layers.Layer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -9,6 +10,8 @@ import org.oscim.map.Map;
 import org.oscim.theme.ThemeFile;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MapBuilder {
@@ -25,7 +28,12 @@ public class MapBuilder {
         return map;
     }
 
-    public MapBuilder setBaseMap(OSciMap4TileSource tileSource) {
+    public MapBuilder setTileSource(String url) {
+        setTileSource(new OSciMap4TileSource(url));
+        return this;
+    }
+
+    public MapBuilder setTileSource(OSciMap4TileSource tileSource) {
         baseLayer = new OsmTileLayer(map);
         baseLayer.setTileSource(tileSource);
         return this;
@@ -46,7 +54,12 @@ public class MapBuilder {
         return this;
     }
 
-    public MapBuilder setTheme(ThemeFile theme) {
+    public MapBuilder setTheme(String path) {
+        setTheme(new Theme(path));
+        return this;
+    }
+
+    public MapBuilder setTheme(Theme theme) {
         this.theme = theme;
         return this;
     }
@@ -58,5 +71,22 @@ public class MapBuilder {
         }
 
         map.setTheme(theme);
+    }
+
+    public static class Theme implements ThemeFile {
+        private final String path;
+
+        public Theme(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public InputStream getRenderThemeAsStream() throws FileNotFoundException {
+            return AssetAdapter.readFileAsStream(path);
+        }
+
+        public String getPath() {
+            return path;
+        }
     }
 }
