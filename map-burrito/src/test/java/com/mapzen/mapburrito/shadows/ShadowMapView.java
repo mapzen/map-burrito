@@ -1,5 +1,7 @@
 package com.mapzen.mapburrito.shadows;
 
+import com.mapzen.mapburrito.TestMap;
+
 import org.mockito.Mockito;
 import org.oscim.android.AndroidAssets;
 import org.oscim.android.AndroidMap;
@@ -18,10 +20,7 @@ import android.util.AttributeSet;
 
 @Implements(MapView.class)
 public class ShadowMapView extends ShadowRelativeLayout {
-    @RealObject
-    MapView realMapView;
-
-    private static AndroidMap map;
+    private Map map;
 
     public void __constructor__(Context context) {
         __constructor__(context, null);
@@ -30,18 +29,12 @@ public class ShadowMapView extends ShadowRelativeLayout {
     public void __constructor__(Context context, AttributeSet attributeSet) {
         AndroidGraphics.init();
         AndroidAssets.init(context);
-        ReflectionHelpers.setField(realMapView, "mMap", getMockAndroidMap());
     }
 
     @Implementation
     public Map map() {
-        return getMockAndroidMap();
-    }
-
-    public static Map getMockAndroidMap() {
         if (map == null) {
-            map = Mockito.mock(AndroidMap.class);
-            Mockito.when(map.viewport()).thenReturn(new ViewController());
+            map = new TestMap();
         }
 
         return map;

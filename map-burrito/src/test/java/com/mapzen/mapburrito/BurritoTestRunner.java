@@ -3,7 +3,6 @@ package com.mapzen.mapburrito;
 import com.mapzen.mapburrito.shadows.ShadowCanvasAdapter;
 import com.mapzen.mapburrito.shadows.ShadowGLMatrix;
 import com.mapzen.mapburrito.shadows.ShadowMapView;
-import com.mapzen.mapburrito.shadows.ShadowViewController;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -20,7 +19,6 @@ public class BurritoTestRunner extends RobolectricGradleTestRunner {
             Collections.unmodifiableList(Arrays.asList(
                     "org.oscim.android.MapView",
                     "org.oscim.renderer.GLMatrix",
-                    "org.oscim.map.ViewController",
                     "org.oscim.backend.CanvasAdapter"
             ));
 
@@ -34,7 +32,6 @@ public class BurritoTestRunner extends RobolectricGradleTestRunner {
                 .newBuilder()
                 .addShadowClass(ShadowMapView.class)
                 .addShadowClass(ShadowGLMatrix.class)
-                .addShadowClass(ShadowViewController.class)
                 .addShadowClass(ShadowCanvasAdapter.class)
                 .build();
     }
