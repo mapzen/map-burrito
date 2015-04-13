@@ -1,19 +1,14 @@
 package com.mapzen.mapburrito.demo;
 
-import com.mapzen.mapburrito.MapBuilder;
+import com.mapzen.mapburrito.MapController;
 
 import org.oscim.android.MapView;
-import org.oscim.backend.AssetAdapter;
-import org.oscim.theme.ThemeFile;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -23,12 +18,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         final MapView mapView = (MapView) findViewById(R.id.map);
-        new MapBuilder(mapView.map())
+        new MapController(mapView.map())
                 .setTileSource(new OSciMap4TileSource())
                 .addBuildingLayer()
                 .addLabelLayer()
-                .setTheme("styles/default.xml")
-                .build();
+                .setTheme("styles/default.xml");
     }
 
     @Override

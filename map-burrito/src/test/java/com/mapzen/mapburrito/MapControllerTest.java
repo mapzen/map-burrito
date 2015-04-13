@@ -8,74 +8,76 @@ import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Map;
-import org.oscim.theme.ThemeFile;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 import org.robolectric.annotation.Config;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(BurritoTestRunner.class)
 @Config(constants = BuildConfig.class)
-public class MapBuilderTest {
-    private MapBuilder builder;
+public class MapControllerTest {
+    private MapController mapController;
     private Map map;
 
     @Before
     public void setUp() throws Exception {
         map = new TestMap();
-        builder = new MapBuilder(map);
+        mapController = new MapController(map);
     }
 
     @Test
     public void shouldNotBeNull() throws Exception {
-        assertThat(builder).isNotNull();
+        assertThat(mapController).isNotNull();
     }
 
     @Test
     public void setTileSource_shouldAddVectorTileLayerFromUrl() throws Exception {
-        builder.setTileSource("http://vector.example.com/").build();
+        mapController.setTileSource("http://vector.example.com/");
         assertThat(map.layers().get(1)).isInstanceOf(VectorTileLayer.class);
     }
 
     @Test
     public void setTileSource_shouldAddVectorTileLayerFromTileSource() throws Exception {
-        builder.setTileSource(new OSciMap4TileSource()).build();
+        mapController.setTileSource(new OSciMap4TileSource());
         assertThat(map.layers().get(1)).isInstanceOf(VectorTileLayer.class);
+    }
+
+    @Test
+    public void getBaseLayer_shouldReturnVectorTileLayer() throws Exception {
+        mapController.setTileSource(new OSciMap4TileSource());
+        assertThat(mapController.getBaseLayer()).isInstanceOf(VectorTileLayer.class);
     }
 
     @Test
     public void addLayer_shouldAddLayerToMap() throws Exception {
         Layer layer = new TestLayer(map);
-        builder.addLayer(layer).build();
+        mapController.addLayer(layer);
         assertThat(map.layers()).contains(layer);
     }
 
     @Test
     public void addBuildingLayer_shouldAddBuildingLayerToMap() throws Exception {
-        builder.setTileSource("http://vector.example.com/").addBuildingLayer().build();
+        mapController.setTileSource("http://vector.example.com/").addBuildingLayer();
         assertThat(map.layers().get(2)).isInstanceOf(BuildingLayer.class);
     }
 
     @Test
     public void addLabelLayer_shouldAddLabelLayerToMap() throws Exception {
-        builder.setTileSource("http://vector.example.com/").addLabelLayer().build();
+        mapController.setTileSource("http://vector.example.com/").addLabelLayer();
         assertThat(map.layers().get(2)).isInstanceOf(LabelLayer.class);
     }
 
     @Test
     public void setTheme_shouldApplyThemeFromPath() throws Exception {
         String path = "path/to/theme.xml";
-        builder.setTheme(path).build();
-        assertThat(((MapBuilder.Theme) ((TestMap) map).getTheme()).getPath()).isEqualTo(path);
+        mapController.setTheme(path);
+        assertThat(((MapController.Theme) ((TestMap) map).getTheme()).getPath()).isEqualTo(path);
     }
 
     @Test
     public void setTheme_shouldApplyThemeFromTheme() throws Exception {
-        MapBuilder.Theme theme = new MapBuilder.Theme("path/to/theme.xml");
-        builder.setTheme(theme).build();
+        MapController.Theme theme = new MapController.Theme("path/to/theme.xml");
+        mapController.setTheme(theme);
         assertThat(((TestMap) map).getTheme()).isEqualTo(theme);
     }
 

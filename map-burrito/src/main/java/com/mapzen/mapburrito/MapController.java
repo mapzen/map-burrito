@@ -14,13 +14,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class MapBuilder {
+public class MapController {
     private Map map;
     private VectorTileLayer baseLayer;
-    private ArrayList<Layer> layers = new ArrayList<>();
-    private ThemeFile theme;
 
-    public MapBuilder(Map map) {
+    public MapController(Map map) {
         this.map = map;
     }
 
@@ -28,51 +26,71 @@ public class MapBuilder {
         return map;
     }
 
-    public MapBuilder setTileSource(String url) {
+    public VectorTileLayer getBaseLayer() {
+        return baseLayer;
+    }
+
+    /**
+     * Set tile source via URL string.
+     */
+    public MapController setTileSource(String url) {
         setTileSource(new OSciMap4TileSource(url));
         return this;
     }
 
-    public MapBuilder setTileSource(OSciMap4TileSource tileSource) {
+    /**
+     * Set tile source via {@link OSciMap4TileSource}
+     */
+    public MapController setTileSource(OSciMap4TileSource tileSource) {
         baseLayer = new OsmTileLayer(map);
         baseLayer.setTileSource(tileSource);
+        map.setBaseMap(baseLayer);
         return this;
     }
 
-    public MapBuilder addLayer(Layer layer) {
-        layers.add(layer);
+    /**
+     * Add generic map layer.
+     */
+    public MapController addLayer(Layer layer) {
+        map.layers().add(layer);
         return this;
     }
 
-    public MapBuilder addBuildingLayer() {
+    /**
+     * Convenience method to add building layer using current base layer.
+     */
+    public MapController addBuildingLayer() {
         addLayer(new BuildingLayer(map, baseLayer));
         return this;
     }
 
-    public MapBuilder addLabelLayer() {
+    /**
+     * Convenience method to add label layer using current base layer.
+     */
+    public MapController addLabelLayer() {
         addLayer(new LabelLayer(map, baseLayer));
         return this;
     }
 
-    public MapBuilder setTheme(String path) {
+    /**
+     * Set map theme using path to xml style declaration (usually found in assets folder).
+     */
+    public MapController setTheme(String path) {
         setTheme(new Theme(path));
         return this;
     }
 
-    public MapBuilder setTheme(Theme theme) {
-        this.theme = theme;
+    /**
+     * Set map theme using {@link Theme} object.
+     */
+    public MapController setTheme(Theme theme) {
+        map.setTheme(theme);
         return this;
     }
 
-    public void build() {
-        map.setBaseMap(baseLayer);
-        for (Layer layer : layers) {
-            map.layers().add(layer);
-        }
-
-        map.setTheme(theme);
-    }
-
+    /**
+     * Implementation of {@link ThemeFile} that loads xml style declaration from the given path.
+     */
     public static class Theme implements ThemeFile {
         private final String path;
 
