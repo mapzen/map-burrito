@@ -11,6 +11,8 @@ import org.oscim.map.Map;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 import org.robolectric.annotation.Config;
 
+import android.location.Location;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(BurritoTestRunner.class)
@@ -79,6 +81,16 @@ public class MapControllerTest {
         MapController.Theme theme = new MapController.Theme("path/to/theme.xml");
         mapController.setTheme(theme);
         assertThat(((TestMap) map).getTheme()).isEqualTo(theme);
+    }
+
+    @Test
+    public void centerOn_shouldAnimateMapToLocation() throws Exception {
+        Location location = new Location("test");
+        location.setLatitude(1.0);
+        location.setLongitude(2.0);
+        mapController.centerOn(location);
+        assertThat(TestMap.TestAnimator.getLastGeoPointAnimatedTo().getLatitude()).isEqualTo(1.0);
+        assertThat(TestMap.TestAnimator.getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0);
     }
 
     private class TestLayer extends Layer {

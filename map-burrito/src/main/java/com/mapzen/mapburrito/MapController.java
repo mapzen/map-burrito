@@ -1,6 +1,7 @@
 package com.mapzen.mapburrito;
 
 import org.oscim.backend.AssetAdapter;
+import org.oscim.core.GeoPoint;
 import org.oscim.layers.Layer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -10,9 +11,10 @@ import org.oscim.map.Map;
 import org.oscim.theme.ThemeFile;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
+import android.location.Location;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class MapController {
     private Map map;
@@ -85,6 +87,11 @@ public class MapController {
      */
     public MapController setTheme(Theme theme) {
         map.setTheme(theme);
+        return this;
+    }
+
+    public MapController centerOn(Location location) {
+        map.animator().animateTo(new GeoPoint(location.getLatitude(), location.getLongitude()));
         return this;
     }
 

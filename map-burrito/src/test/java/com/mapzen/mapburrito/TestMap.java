@@ -1,10 +1,13 @@
 package com.mapzen.mapburrito;
 
+import org.oscim.core.GeoPoint;
+import org.oscim.map.Animator;
 import org.oscim.map.Map;
 import org.oscim.theme.ThemeFile;
 
 public class TestMap extends Map {
     private ThemeFile theme;
+    private Animator animator = new TestAnimator(this);
 
     @Override
     public void updateMap(boolean b) {
@@ -41,5 +44,27 @@ public class TestMap extends Map {
 
     public ThemeFile getTheme() {
         return theme;
+    }
+
+    @Override
+    public Animator animator() {
+        return animator;
+    }
+
+    public static class TestAnimator extends Animator {
+        private static GeoPoint geoPoint;
+
+        public TestAnimator(Map map) {
+            super(map);
+        }
+
+        @Override
+        public synchronized void animateTo(GeoPoint geoPoint) {
+            TestAnimator.geoPoint = geoPoint;
+        }
+
+        public static GeoPoint getLastGeoPointAnimatedTo() {
+            return geoPoint;
+        }
     }
 }

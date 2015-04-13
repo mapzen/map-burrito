@@ -26,5 +26,6 @@ repositories {
 
 dependencies {
   compile 'com.android.support:appcompat-v7:22.0.0'
+  compile 'com.mapzen.android:lost:1.0.1'
   compile project(':map-burrito')
 }
