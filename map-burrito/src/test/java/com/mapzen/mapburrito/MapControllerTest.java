@@ -13,7 +13,9 @@ import org.robolectric.annotation.Config;
 
 import android.location.Location;
 
+import static com.mapzen.mapburrito.TestMap.TestAnimator.getLastGeoPointAnimatedTo;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 @RunWith(BurritoTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -89,8 +91,18 @@ public class MapControllerTest {
         location.setLatitude(1.0);
         location.setLongitude(2.0);
         mapController.centerOn(location);
-        assertThat(TestMap.TestAnimator.getLastGeoPointAnimatedTo().getLatitude()).isEqualTo(1.0);
-        assertThat(TestMap.TestAnimator.getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0);
+        assertThat(getLastGeoPointAnimatedTo().getLatitude()).isEqualTo(1.0);
+        assertThat(getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0);
+    }
+
+    @Test
+    public void resetMapAndCenterOn_shouldAnimateMapToLocation() throws Exception {
+        Location location = new Location("test");
+        location.setLatitude(1.0);
+        location.setLongitude(2.0);
+        mapController.resetMapAndCenterOn(location);
+        assertThat(getLastGeoPointAnimatedTo().getLatitude()).isCloseTo(1.0, within(0.0001));
+        assertThat(getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0, within(0.0001));
     }
 
     private class TestLayer extends Layer {

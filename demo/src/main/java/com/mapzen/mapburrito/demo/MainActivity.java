@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation();
                 if (location != null) {
-                    mapController.centerOn(location);
+                    mapController.resetMapAndCenterOn(location);
                 }
             }
         });

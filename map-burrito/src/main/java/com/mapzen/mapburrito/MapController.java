@@ -2,6 +2,7 @@ package com.mapzen.mapburrito;
 
 import org.oscim.backend.AssetAdapter;
 import org.oscim.core.GeoPoint;
+import org.oscim.core.MapPosition;
 import org.oscim.layers.Layer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -17,6 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class MapController {
+    public static final int DEFAULT_DURATION = 1000;
+    public static final int DEFAULT_ZOOM = 17;
+
     private Map map;
     private VectorTileLayer baseLayer;
 
@@ -92,6 +96,16 @@ public class MapController {
 
     public MapController centerOn(Location location) {
         map.animator().animateTo(new GeoPoint(location.getLatitude(), location.getLongitude()));
+        return this;
+    }
+
+    public MapController resetMapAndCenterOn(Location location) {
+        MapPosition position = map.getMapPosition();
+        position.setPosition(location.getLatitude(), location.getLongitude());
+        position.setZoomLevel(DEFAULT_ZOOM);
+        position.setTilt(0);
+        position.setBearing(0);
+        map.animator().animateTo(DEFAULT_DURATION, position);
         return this;
     }
 
