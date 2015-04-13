@@ -9,6 +9,7 @@ import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 public class MainActivity extends ActionBarActivity {
+    private MapController mapController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
         new LostApiClient.Builder(this).build().connect();
 
         final MapView mapView = (MapView) findViewById(R.id.map);
-        final MapController mapController = new MapController(mapView.map())
+        mapController = new MapController(mapView.map())
                 .setTileSource(new OSciMap4TileSource())
                 .addBuildingLayer()
                 .addLabelLayer()
@@ -34,13 +36,19 @@ public class MainActivity extends ActionBarActivity {
         final ImageButton findMe = (ImageButton) findViewById(R.id.find_me);
         findMe.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Location location = LocationServices.FusedLocationApi.getLastLocation();
-                if (location != null) {
-                    mapController.resetMapAndCenterOn(location);
-                }
+            public void onClick(@NonNull View view) {
+                centerOnCurrentLocation();
             }
         });
+
+        centerOnCurrentLocation();
+    }
+
+    private void centerOnCurrentLocation() {
+        final Location location = LocationServices.FusedLocationApi.getLastLocation();
+        if (location != null) {
+            mapController.resetMapAndCenterOn(location);
+        }
     }
 
     @Override
