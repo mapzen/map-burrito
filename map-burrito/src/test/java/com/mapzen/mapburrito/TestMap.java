@@ -9,9 +9,11 @@ import org.oscim.theme.ThemeFile;
 public class TestMap extends Map {
     private ThemeFile theme;
     private Animator animator = new TestAnimator(this);
+    private boolean updated;
 
     @Override
     public void updateMap(boolean b) {
+        updated = b;
     }
 
     @Override
@@ -50,6 +52,10 @@ public class TestMap extends Map {
     @Override
     public Animator animator() {
         return animator;
+    }
+
+    public boolean isUpdated() {
+        return updated;
     }
 
     public static class TestAnimator extends Animator {

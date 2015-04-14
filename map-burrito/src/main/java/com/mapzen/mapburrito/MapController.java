@@ -151,6 +151,14 @@ public class MapController {
     }
 
     /**
+     * Update all map layers.
+     */
+    public MapController update() {
+        map.updateMap(true);
+        return this;
+    }
+
+    /**
      * Implementation of {@link ThemeFile} that loads xml style declaration from the given path.
      */
     public static class Theme implements ThemeFile {

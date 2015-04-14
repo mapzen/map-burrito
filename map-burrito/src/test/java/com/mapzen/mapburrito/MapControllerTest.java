@@ -126,6 +126,12 @@ public class MapControllerTest {
         assertThat(getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0, within(0.0001));
     }
 
+    @Test
+    public void update_shouldUpdateMap() throws Exception {
+        mapController.update();
+        assertThat(((TestMap) map).isUpdated()).isTrue();
+    }
+
     private class TestLayer extends Layer {
         public TestLayer(Map map) {
             super(map);
