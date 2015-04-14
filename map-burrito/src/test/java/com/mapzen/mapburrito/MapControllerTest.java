@@ -9,6 +9,7 @@ import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Map;
+import org.oscim.tiling.source.OkHttpEngine;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 import org.robolectric.annotation.Config;
 
@@ -130,6 +131,13 @@ public class MapControllerTest {
     public void update_shouldUpdateMap() throws Exception {
         mapController.update();
         assertThat(((TestMap) map).isUpdated()).isTrue();
+    }
+
+    @Test
+    public void setHttpEngine_shouldUseHttpFactory() throws Exception {
+        OSciMap4TileSource tileSource = new OSciMap4TileSource();
+        mapController.setHttpEngine(new OkHttpEngine.OkHttpFactory()).setTileSource(tileSource);
+        assertThat(tileSource.getHttpEngine()).isInstanceOf(OkHttpEngine.class);
     }
 
     private class TestLayer extends Layer {

@@ -14,6 +14,7 @@ import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Map;
 import org.oscim.theme.ThemeFile;
+import org.oscim.tiling.source.HttpEngine;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
 import android.graphics.drawable.Drawable;
@@ -32,6 +33,7 @@ public class MapController {
     private VectorTileLayer baseLayer;
     private ItemizedLayer<MarkerItem> currentLocationLayer;
     private MarkerSymbol currentLocationSymbol;
+    private HttpEngine.Factory httpFactory;
 
     public MapController(Map map) {
         this.map = map;
@@ -46,6 +48,14 @@ public class MapController {
     }
 
     /**
+     * Configure HTTP engine to be used when constructing base layer.
+     */
+    public MapController setHttpEngine(HttpEngine.Factory httpFactory) {
+        this.httpFactory = httpFactory;
+        return this;
+    }
+
+    /**
      * Set tile source via URL string.
      */
     public MapController setTileSource(String url) {
@@ -54,9 +64,13 @@ public class MapController {
     }
 
     /**
-     * Set tile source via {@link OSciMap4TileSource}
+     * Set tile source via {@link OSciMap4TileSource}.
      */
     public MapController setTileSource(OSciMap4TileSource tileSource) {
+        if (httpFactory != null) {
+            tileSource.setHttpEngine(httpFactory);
+        }
+
         baseLayer = new OsmTileLayer(map);
         baseLayer.setTileSource(tileSource);
         map.setBaseMap(baseLayer);

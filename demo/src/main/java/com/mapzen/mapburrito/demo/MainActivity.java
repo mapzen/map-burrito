@@ -5,6 +5,7 @@ import com.mapzen.android.lost.api.LostApiClient;
 import com.mapzen.mapburrito.MapController;
 
 import org.oscim.android.MapView;
+import org.oscim.tiling.source.OkHttpEngine;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
 import android.graphics.drawable.Drawable;
@@ -29,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
 
         final MapView mapView = (MapView) findViewById(R.id.map);
         mapController = new MapController(mapView.map())
+                .setHttpEngine(new OkHttpEngine.OkHttpFactory())
                 .setTileSource(new OSciMap4TileSource())
                 .addBuildingLayer()
                 .addLabelLayer()
