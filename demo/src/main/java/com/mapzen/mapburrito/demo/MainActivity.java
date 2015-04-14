@@ -7,6 +7,7 @@ import com.mapzen.mapburrito.MapController;
 import org.oscim.android.MapView;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,13 +42,15 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        final Drawable marker = getResources().getDrawable(android.R.drawable.btn_star_big_on);
+        mapController.setCurrentLocationDrawable(marker);
         centerOnCurrentLocation();
     }
 
     private void centerOnCurrentLocation() {
         final Location location = LocationServices.FusedLocationApi.getLastLocation();
         if (location != null) {
-            mapController.resetMapAndCenterOn(location);
+            mapController.resetMapAndCenterOn(location).showCurrentLocation(location);
         }
     }
 

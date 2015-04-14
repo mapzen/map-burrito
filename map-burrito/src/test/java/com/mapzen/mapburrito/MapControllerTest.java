@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oscim.layers.Layer;
+import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
@@ -11,14 +12,16 @@ import org.oscim.map.Map;
 import org.oscim.tiling.source.oscimap4.OSciMap4TileSource;
 import org.robolectric.annotation.Config;
 
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 
 import static com.mapzen.mapburrito.TestMap.TestAnimator.getLastGeoPointAnimatedTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.robolectric.RuntimeEnvironment.application;
 
 @RunWith(BurritoTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, emulateSdk = 21)
 public class MapControllerTest {
     private MapController mapController;
     private Map map;
@@ -72,6 +75,28 @@ public class MapControllerTest {
     }
 
     @Test
+    public void setCurrentLocation_shouldAddItemizedLayerToMap() throws Exception {
+        Location location = getTestLocation(1.0, 2.0);
+        Drawable icon = application.getResources().getDrawable(android.R.drawable.btn_star_big_on);
+        mapController.setTileSource("http://vector.example.com/")
+                .setCurrentLocationDrawable(icon)
+                .showCurrentLocation(location);
+        assertThat(map.layers().get(2)).isInstanceOf(ItemizedLayer.class);
+    }
+
+    @Test
+    public void setCurrentLocation_shouldRemovePreviousMarker() throws Exception {
+        Location location = getTestLocation(1.0, 2.0);
+        Drawable icon = application.getResources().getDrawable(android.R.drawable.btn_star_big_on);
+        mapController.setTileSource("http://vector.example.com/")
+                .setCurrentLocationDrawable(icon)
+                .showCurrentLocation(location)
+                .showCurrentLocation(location);
+        ItemizedLayer currentLocationLayer = (ItemizedLayer) map.layers().get(2);
+        assertThat(currentLocationLayer.size()).isEqualTo(1);
+    }
+
+    @Test
     public void setTheme_shouldApplyThemeFromPath() throws Exception {
         String path = "path/to/theme.xml";
         mapController.setTheme(path);
@@ -87,9 +112,7 @@ public class MapControllerTest {
 
     @Test
     public void centerOn_shouldAnimateMapToLocation() throws Exception {
-        Location location = new Location("test");
-        location.setLatitude(1.0);
-        location.setLongitude(2.0);
+        Location location = getTestLocation(1.0, 2.0);
         mapController.centerOn(location);
         assertThat(getLastGeoPointAnimatedTo().getLatitude()).isEqualTo(1.0);
         assertThat(getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0);
@@ -97,9 +120,7 @@ public class MapControllerTest {
 
     @Test
     public void resetMapAndCenterOn_shouldAnimateMapToLocation() throws Exception {
-        Location location = new Location("test");
-        location.setLatitude(1.0);
-        location.setLongitude(2.0);
+        Location location = getTestLocation(1.0, 2.0);
         mapController.resetMapAndCenterOn(location);
         assertThat(getLastGeoPointAnimatedTo().getLatitude()).isCloseTo(1.0, within(0.0001));
         assertThat(getLastGeoPointAnimatedTo().getLongitude()).isEqualTo(2.0, within(0.0001));
@@ -109,5 +130,12 @@ public class MapControllerTest {
         public TestLayer(Map map) {
             super(map);
         }
+    }
+
+    private Location getTestLocation(double lat, double lng) {
+        Location location = new Location("test");
+        location.setLatitude(lat);
+        location.setLongitude(lng);
+        return location;
     }
 }
