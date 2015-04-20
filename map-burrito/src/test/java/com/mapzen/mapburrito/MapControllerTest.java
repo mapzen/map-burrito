@@ -3,6 +3,7 @@ package com.mapzen.mapburrito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oscim.core.Tile;
 import org.oscim.layers.Layer;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
@@ -138,6 +139,15 @@ public class MapControllerTest {
         OSciMap4TileSource tileSource = new OSciMap4TileSource();
         mapController.setHttpEngine(new OkHttpEngine.OkHttpFactory()).setTileSource(tileSource);
         assertThat(tileSource.getHttpEngine()).isInstanceOf(OkHttpEngine.class);
+    }
+
+    @Test
+    public void setApiKey_shouldAppendQueryParam() throws Exception {
+        OSciMap4TileSource tileSource = new OSciMap4TileSource();
+        mapController.setHttpEngine(new OkHttpEngine.OkHttpFactory())
+                .setApiKey("test123")
+                .setTileSource(tileSource);
+        assertThat(tileSource.getTileUrl(new Tile(0, 0, (byte) 0))).endsWith("?api_key=test123");
     }
 
     private class TestLayer extends Layer {

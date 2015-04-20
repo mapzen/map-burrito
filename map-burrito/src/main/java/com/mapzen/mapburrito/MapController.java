@@ -34,6 +34,7 @@ public class MapController {
     private ItemizedLayer<MarkerItem> currentLocationLayer;
     private MarkerSymbol currentLocationSymbol;
     private HttpEngine.Factory httpFactory;
+    private String apiKey;
 
     public MapController(Map map) {
         this.map = map;
@@ -55,6 +56,11 @@ public class MapController {
         return this;
     }
 
+    public MapController setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
     /**
      * Set tile source via URL string.
      */
@@ -69,6 +75,10 @@ public class MapController {
     public MapController setTileSource(OSciMap4TileSource tileSource) {
         if (httpFactory != null) {
             tileSource.setHttpEngine(httpFactory);
+        }
+
+        if (apiKey != null) {
+            tileSource.setApiKey(apiKey);
         }
 
         baseLayer = new OsmTileLayer(map);
