@@ -15,14 +15,14 @@ group = 'com.mapzen.android'
 version = '0.1-SNAPSHOT'
 
 android {
-  compileSdkVersion 21
+  compileSdkVersion 22
   buildToolsVersion "22.0.1"
 
   defaultConfig {
     minSdkVersion 15
-    targetSdkVersion 21
+    targetSdkVersion 22
     versionCode 1
-    versionName "0.1"
+    versionName "0.1-SNAPSHOT"
   }
   buildTypes {
     release {
@@ -50,3 +50,5 @@ dependencies {
     exclude group: 'org.apache.httpcomponents', module: 'httpclient'
   }
 }
+
+apply from: file('../gradle-mvn-push.gradle')
